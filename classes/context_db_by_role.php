@@ -37,6 +37,7 @@ class context_db_by_role extends context {
      */
     const CONTEXT_LEVEL = 120;
 
+
     /**
      * Please use context_user::instance($userid) if you need the instance of context.
      * Alternatively if you know only the context id use context::instance_by_id($contextid)
@@ -95,10 +96,9 @@ class context_db_by_role extends context {
      *
      * @return array
      */
-    public function get_capabilities() {
+    public function get_capabilities($sort = 'ORDER BY contextlevel,component,name') {
         global $DB;
 
-        $sort = 'ORDER BY contextlevel,component,name';   // To group them sensibly for display.
         $sql = "SELECT *
                   FROM {capabilities}
                  WHERE contextlevel = " . self::CONTEXT_LEVEL;

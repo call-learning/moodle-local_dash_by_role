@@ -36,12 +36,14 @@ class context_db_by_role_test extends advanced_testcase {
         $context = \local_dash_by_role\context_db_by_role::instance($rid1);
         $this->assertEquals("Dashboard by role: Role 1", $context->get_context_name());
     }
+
     /**
      * Test get level name
      */
     public function test_get_level_name() {
         $this->assertEquals("Dashboard by role", context_db_by_role::get_level_name());
     }
+
     /**
      * Test get url
      */
@@ -49,8 +51,9 @@ class context_db_by_role_test extends advanced_testcase {
         $this->resetAfterTest();
         $rid1 = $this->getDataGenerator()->create_role(['name' => 'Role 1']);
         $context = \local_dash_by_role\context_db_by_role::instance($rid1);
-        $this->assertEquals("https://www.example.com/moodle/role/define.php?id=179000", $context->get_url()->out());
+        $this->assertEquals("https://www.example.com/moodle/role/define.php?id=" . $rid1, $context->get_url()->out());
     }
+
     /**
      * Test get capabilities
      */
@@ -60,6 +63,7 @@ class context_db_by_role_test extends advanced_testcase {
         $context = \local_dash_by_role\context_db_by_role::instance($rid1);
         $this->assertEquals([], $context->get_capabilities());
     }
+
     /**
      * Test get instance
      */
