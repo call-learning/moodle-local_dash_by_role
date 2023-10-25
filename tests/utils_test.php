@@ -16,9 +16,6 @@
 namespace local_dash_by_role;
 
 use advanced_testcase;
-
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * Utils test
  *
@@ -31,7 +28,7 @@ class utils_test extends advanced_testcase {
      * Check that context level is setup correctly when fetching get page context.
      *
      * @return void
-     * @throws \dml_exception
+     * @covers \local_dash_by_role\utils::get_page_context
      */
     public function test_get_page_context() {
         $this->resetAfterTest();
@@ -44,7 +41,7 @@ class utils_test extends advanced_testcase {
      * Check that context level is setup correctly when fetching get page context.
      *
      * @return void
-     * @throws \dml_exception
+     * @covers \local_dash_by_role\utils::get_page_context_for_user_role
      */
     public function test_get_page_context_for_user_role() {
         $this->resetAfterTest();

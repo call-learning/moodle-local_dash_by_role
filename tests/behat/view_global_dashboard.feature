@@ -19,24 +19,24 @@ Feature: View block on the global dashboard that are visible for my role.
       | forcedefaultmymoodle | 1 |
     And I log in as "admin"
     And I navigate to "Appearance > Default Dashboard page" in site administration
-    And I press "Blocks editing on"
+    And I turn editing mode on
     And I select "Global student" from the "roleid" singleselect
-    And I add the "HTML" block
-    And I configure the "(new HTML block)" block
+    And I add the "Text" block
+    And I configure the "(new text block)" block
     And I set the field "Content" to "First block content"
-    And I set the field "HTML block title" to "For student"
+    And I set the field "Text block title" to "For student"
     And I press "Save changes"
     And I select "Global teacher" from the "roleid" singleselect
-    And I add the "HTML" block
-    And I configure the "(new HTML block)" block
+    And I add the "Text" block
+    And I configure the "(new text block)" block
     And I set the field "Content" to "First block content"
-    And I set the field "HTML block title" to "For teacher"
+    And I set the field "Text block title" to "For teacher"
     And I press "Save changes"
     And I select "All roles" from the "roleid" singleselect
-    And I add the "HTML" block
-    And I configure the "(new HTML block)" block
+    And I add the "Text" block
+    And I configure the "(new text block)" block
     And I set the field "Content" to "First block content"
-    And I set the field "HTML block title" to "For all"
+    And I set the field "Text block title" to "For all"
     And I press "Save changes"
     When I press "Reset Dashboard for all users"
     And I should see "All Dashboard pages have been reset to default."
@@ -44,21 +44,18 @@ Feature: View block on the global dashboard that are visible for my role.
 
   Scenario: I can only see block for my student role
     When I log in as "student"
-    And I follow "Dashboard" in the user menu
     And I should not see "For teacher"
     And I should see "For student"
     And I should see "For all"
 
   Scenario: I can only see block for my teacher role
     When I log in as "teacher"
-    And I follow "Dashboard" in the user menu
     And I should see "For teacher"
     And I should not see "For student"
     And I should see "For all"
 
   Scenario: I can only see block for all roles
     When I log in as "admin"
-    And I follow "Dashboard" in the user menu
     And I should not see "For teacher"
     And I should not see "For student"
     And I should see "For all"

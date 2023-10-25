@@ -20,12 +20,8 @@ use context;
 use moodle_url;
 use stdClass;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * Context for configurable dashboard page by role
- *
- * Provide the context for this dashboard by role
  *
  * @package   local_dash_by_role
  * @copyright 2021 - CALL Learning - Laurent David <laurent@call-learning.fr>
@@ -72,7 +68,7 @@ class context_db_by_role extends context {
         global $DB;
 
         $name = '';
-        if ($role = $DB->get_record('role', array('id' => $this->_instanceid))) {
+        if ($role = $DB->get_record('role', ['id' => $this->_instanceid])) {
             if ($withprefix) {
                 $name = get_string('pluginname', 'local_dash_by_role') . ': ';
             }
@@ -87,13 +83,13 @@ class context_db_by_role extends context {
      * @return moodle_url
      */
     public function get_url() {
-        $url = new moodle_url('/role/define.php', array('id' => $this->_instanceid));
+        $url = new moodle_url('/role/define.php', ['id' => $this->_instanceid]);
         return $url;
     }
 
     /**
      * Returns array of relevant context capability records.
-     *
+     * @param string $sort
      * @return array
      */
     public function get_capabilities($sort = 'ORDER BY contextlevel,component,name') {
@@ -120,8 +116,8 @@ class context_db_by_role extends context {
             return $context;
         }
 
-        if (!$record = $DB->get_record('context', array('contextlevel' => self::CONTEXT_LEVEL, 'instanceid' => $roleid))) {
-            if ($role = $DB->get_record('role', array('id' => $roleid), '*', $strictness)) {
+        if (!$record = $DB->get_record('context', ['contextlevel' => self::CONTEXT_LEVEL, 'instanceid' => $roleid])) {
+            if ($role = $DB->get_record('role', ['id' => $roleid], '*', $strictness)) {
                 $record = context::insert_context_record(self::CONTEXT_LEVEL, $role->id, '/' . SYSCONTEXTID, 0);
             }
         }
@@ -180,7 +176,7 @@ class context_db_by_role extends context {
         // First update normal users.
         $path = $DB->sql_concat('?', 'id');
         $pathstart = '/' . SYSCONTEXTID . '/';
-        $params = array($pathstart);
+        $params = [$pathstart];
 
         if ($force) {
             $where = "depth <> 2 OR path IS NULL OR path <> ({$path})";

@@ -17,8 +17,6 @@ namespace local_dash_by_role;
 
 use advanced_testcase;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * Context by role test
  *
@@ -29,6 +27,7 @@ defined('MOODLE_INTERNAL') || die();
 class context_db_by_role_test extends advanced_testcase {
     /**
      * Test get name
+     * @covers \local_dash_by_role\context_db_by_role::get_name
      */
     public function test_get_context_name() {
         $this->resetAfterTest();
@@ -39,6 +38,7 @@ class context_db_by_role_test extends advanced_testcase {
 
     /**
      * Test get level name
+     * @covers \local_dash_by_role\context_db_by_role::get_level_name
      */
     public function test_get_level_name() {
         $this->assertEquals("Dashboard by role", context_db_by_role::get_level_name());
@@ -46,6 +46,7 @@ class context_db_by_role_test extends advanced_testcase {
 
     /**
      * Test get url
+     * @covers \local_dash_by_role\context_db_by_role::get_url
      */
     public function test_get_url() {
         $this->resetAfterTest();
@@ -56,6 +57,7 @@ class context_db_by_role_test extends advanced_testcase {
 
     /**
      * Test get capabilities
+     * @covers \local_dash_by_role\context_db_by_role::get_capabilities
      */
     public function test_get_capabilities() {
         $this->resetAfterTest();
@@ -66,6 +68,7 @@ class context_db_by_role_test extends advanced_testcase {
 
     /**
      * Test get instance
+     * @covers \local_dash_by_role\context_db_by_role::instance
      */
     public function test_instance() {
         $this->resetAfterTest();

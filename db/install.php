@@ -13,7 +13,6 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
-
 /**
  * Code to be executed after the plugin's database scheme has been installed is defined here.
  *
@@ -22,14 +21,12 @@
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * Custom code to be run on installing the plugin.
  */
 function xmldb_local_dash_by_role_install() {
     $customcontexts = [
-        \local_dash_by_role\context_db_by_role::CONTEXT_LEVEL => \local_dash_by_role\context_db_by_role::class
+        \local_dash_by_role\context_db_by_role::CONTEXT_LEVEL => \local_dash_by_role\context_db_by_role::class,
     ];
     set_config('custom_context_classes', serialize($customcontexts));
     initialise_cfg();

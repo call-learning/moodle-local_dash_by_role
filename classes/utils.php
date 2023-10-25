@@ -17,8 +17,6 @@ namespace local_dash_by_role;
 
 use context_system;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * Helper class for Dash by role
  *

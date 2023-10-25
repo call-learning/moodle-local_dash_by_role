@@ -13,7 +13,6 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
-
 /**
  * Code to be executed after the plugin's database scheme has been uninstalled is defined here.
  *
@@ -21,8 +20,6 @@
  * @copyright   2021 CALL Learning <contact@call-learning.fr>
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
-defined('MOODLE_INTERNAL') || die();
 
 /**
  * This is called at the beginning of the uninstallation process to give the module

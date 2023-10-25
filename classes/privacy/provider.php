@@ -13,11 +13,7 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
-
 namespace local_dash_by_role\privacy;
-
-
-defined('MOODLE_INTERNAL') || die();
 
 /**
  * Privacy Subsystem for core_my implementing metadata, plugin, and user_preference providers.

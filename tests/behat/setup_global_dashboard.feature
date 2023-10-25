@@ -23,24 +23,24 @@ Feature: Add blocks to the global dashboard page
   Scenario: Add blocks to global dashboard
     When I log in as "admin"
     And I navigate to "Appearance > Default Dashboard page" in site administration
-    And I press "Blocks editing on"
+    And I turn editing mode on
     And I select "Global student" from the "roleid" singleselect
-    And I add the "HTML" block
-    And I configure the "(new HTML block)" block
+    And I add the "Text" block
+    And I configure the "(new text block)" block
     And I set the field "Content" to "First block content"
-    And I set the field "HTML block title" to "For student"
+    And I set the field "Text block title" to "For student"
     And I press "Save changes"
     And I select "Global teacher" from the "roleid" singleselect
-    And I add the "HTML" block
-    And I configure the "(new HTML block)" block
+    And I add the "Text" block
+    And I configure the "(new text block)" block
     And I set the field "Content" to "First block content"
-    And I set the field "HTML block title" to "For teacher"
+    And I set the field "Text block title" to "For teacher"
     And I press "Save changes"
     And I select "All roles" from the "roleid" singleselect
-    And I add the "HTML" block
-    And I configure the "(new HTML block)" block
+    And I add the "Text" block
+    And I configure the "(new text block)" block
     And I set the field "Content" to "First block content"
-    And I set the field "HTML block title" to "For all"
+    And I set the field "Text block title" to "For all"
     And I press "Save changes"
     And I select "Global teacher" from the "roleid" singleselect
     And I should see "For teacher"
