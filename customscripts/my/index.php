@@ -28,7 +28,7 @@
  * This script implements the user's view of the dashboard, and allows editing
  * of the dashboard.
  *
- * @subpackage my
+ * @package    local_dash_by_role
  * @copyright  2010 Remote-Learner.net
  * @author     Hubert Chathi <hubert@remote-learner.net>
  * @author     Olav Jordan <olav.jordan@remote-learner.net>
@@ -65,8 +65,7 @@ if (isguestuser()) {  // Force them to see system default, no editing allowed
     $context = context_system::instance();
     $PAGE->set_blocks_editing_capability('moodle/my:configsyspages');  // unlikely :)
     $strguest = get_string('guest');
-    $header = "$SITE->shortname: $strmymoodle ($strguest)";
-    $pagetitle = $header;
+    $pagetitle = "$strmymoodle ($strguest)";
 
 } else {        // We are trying to view or edit our own My Moodle page
     $userid = $USER->id;  // Owner of the page
@@ -81,7 +80,7 @@ if (isguestuser()) {  // Force them to see system default, no editing allowed
 
 // Get the My Moodle page info.  Should always return something unless the database is broken.
 if (!$currentpage = my_get_page($userid, MY_PAGE_PRIVATE)) {
-    print_error('mymoodlesetup');
+    throw new \moodle_exception('mymoodlesetup');
 }
 
 // Start setting up the page
@@ -89,11 +88,12 @@ $params = array();
 $PAGE->set_context($context);
 $PAGE->set_url('/my/index.php', $params);
 $PAGE->set_pagelayout('mydashboard');
+$PAGE->add_body_class('limitedwidth');
 $PAGE->set_pagetype('my-index');
 $PAGE->blocks->add_region('content');
 $PAGE->set_subpage($currentpage->id);
 $PAGE->set_title($pagetitle);
-$PAGE->set_heading($header);
+$PAGE->set_heading($pagetitle);
 
 if (!isguestuser()) {   // Skip default home page for guests
     if (get_home_page() != HOMEPAGE_MY) {
@@ -103,7 +103,7 @@ if (!isguestuser()) {   // Skip default home page for guests
             $frontpagenode = $PAGE->settingsnav->add(get_string('frontpagesettings'), null, navigation_node::TYPE_SETTING, null);
             $frontpagenode->force_open();
             $frontpagenode->add(get_string('makethismyhome'), new moodle_url('/my/', array('setdefaulthome' => true)),
-                navigation_node::TYPE_SETTING);
+                    navigation_node::TYPE_SETTING);
         }
     }
 }
@@ -114,7 +114,7 @@ if (empty($CFG->forcedefaultmymoodle) && $PAGE->user_allowed_editing()) {
         if (!is_null($userid)) {
             require_sesskey();
             if (!$currentpage = my_reset_page($userid, MY_PAGE_PRIVATE)) {
-                print_error('reseterror', 'my');
+                throw new \moodle_exception('reseterror', 'my');
             }
             redirect(new moodle_url('/my'));
         }
@@ -131,7 +131,7 @@ if (empty($CFG->forcedefaultmymoodle) && $PAGE->user_allowed_editing()) {
             // For the page to display properly with the user context header the page blocks need to
             // be copied over to the user context.
             if (!$currentpage = my_copy_page($USER->id, MY_PAGE_PRIVATE)) {
-                print_error('mymoodlesetup');
+                throw new \moodle_exception('mymoodlesetup');
             }
             $context = context_user::instance($USER->id);
             $PAGE->set_context($context);
@@ -160,7 +160,10 @@ if (empty($CFG->forcedefaultmymoodle) && $PAGE->user_allowed_editing()) {
     }
 
     $url = new moodle_url("$CFG->wwwroot/my/index.php", $params);
-    $button = $OUTPUT->single_button($url, $editstring);
+    $button = '';
+    if (!$PAGE->theme->haseditswitch) {
+        $button = $OUTPUT->single_button($url, $editstring);
+    }
     $PAGE->set_button($resetbutton . $button);
 
 } else {
@@ -172,6 +175,8 @@ echo $OUTPUT->header();
 if (core_userfeedback::should_display_reminder()) {
     core_userfeedback::print_reminder_block();
 }
+
+echo $OUTPUT->addblockbutton('content');
 
 echo $OUTPUT->custom_block_region('content');
 

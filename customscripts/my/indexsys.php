@@ -26,6 +26,7 @@
  * This script implements the user's view of the dashboard, and allows editing
  * of the dashboard.
  *
+ * @package    local_dash_by_role
  * @copyright  2010 Remote-Learner.net
  * @author     Hubert Chathi <hubert@remote-learner.net>
  * @author     Olav Jordan <olav.jordan@remote-learner.net>
@@ -35,9 +36,13 @@
 global $PAGE, $SITE, $CFG, $FULLME, $OUTPUT;
 
 require_once($CFG->dirroot . '/my/lib.php');
-require_once($CFG->libdir . '/adminlib.php');
+require_once($CFG->libdir.'/adminlib.php');
 
-$resetall = optional_param('resetall', null, PARAM_BOOL);
+redirect_if_major_upgrade_required();
+
+$resetall = optional_param('resetall', false, PARAM_BOOL);
+
+$pagetitle = get_string('mypage', 'admin');
 
 // START Dash by role.
 $roleid = optional_param('roleid', 0, PARAM_INT);
@@ -47,39 +52,50 @@ if ($roleid) {
 }
 // END Dash by role.
 
-$header = "$SITE->shortname: " . get_string('myhome') . " (" . get_string('mypage', 'admin') . ")";
-
+$PAGE->set_secondary_active_tab('appearance');
 $PAGE->set_blocks_editing_capability('moodle/my:configsyspages');
-admin_externalpage_setup('mypage', '', $extraparams, '', array('pagelayout' => 'mydashboard'));
-
-if ($resetall && confirm_sesskey()) {
-    my_reset_page_for_all_users(MY_PAGE_PRIVATE, 'my-index');
-    redirect($PAGE->url, get_string('alldashboardswerereset', 'my'));
-}
-
+$PAGE->set_url(new moodle_url('/my/indexsys.php'));
+admin_externalpage_setup('mypage', '', null, '', ['pagelayout' => 'mydashboard', 'nosearch' => true]);
+$PAGE->add_body_class('limitedwidth');
+$PAGE->set_pagetype('my-index');
+$PAGE->blocks->add_region('content');
+$PAGE->set_title($pagetitle);
+$PAGE->set_heading($pagetitle);
+$PAGE->set_secondary_navigation(false);
+$PAGE->set_primary_active_tab('myhome');
 // START Dash by role.
 $context = \local_dash_by_role\utils::get_page_context($roleid);
 $PAGE->set_context($context);
 // END Dash by role.
 
-// Override pagetype to show blocks properly.
-$PAGE->set_pagetype('my-index');
+// If we are resetting all, just output a progress bar.
+if ($resetall && confirm_sesskey()) {
+    echo $OUTPUT->header($pagetitle);
+    echo $OUTPUT->heading(get_string('resettingdashboards', 'my'), 3);
 
-$PAGE->set_title($header);
-$PAGE->set_heading($header);
-$PAGE->blocks->add_region('content');
+    $progressbar = new progress_bar();
+    $progressbar->create();
+
+    \core\session\manager::write_close();
+    my_reset_page_for_all_users(MY_PAGE_PRIVATE, 'my-index', $progressbar);
+    core\notification::success(get_string('alldashboardswerereset', 'my'));
+    echo $OUTPUT->continue_button($PAGE->url);
+    echo $OUTPUT->footer();
+    die();
+}
 
 // @codingStandardsIgnoreFile
 // phpcs:ignoreFile -- this is a old core file.
 
 // Get the My Moodle page info.  Should always return something unless the database is broken.
 if (!$currentpage = my_get_page(null, MY_PAGE_PRIVATE)) {
-    print_error('mymoodlesetup');
+    throw new \moodle_exception('mymoodlesetup');
 }
 $PAGE->set_subpage($currentpage->id);
 
 // Display a button to reset everyone's dashboard.
-$url = new moodle_url($PAGE->url, array('resetall' => 1));
+$url = $PAGE->url;
+$url->params(['resetall' => true, 'sesskey' => sesskey()]);
 $button = $OUTPUT->single_button($url, get_string('reseteveryonesdashboard', 'my'));
 
 // START Dash by role.
@@ -97,6 +113,8 @@ $button = html_writer::div($OUTPUT->render($select), 'px-2') . $button;
 $PAGE->set_button($button . $PAGE->button);
 
 echo $OUTPUT->header();
+
+echo $OUTPUT->addblockbutton('content');
 
 echo $OUTPUT->custom_block_region('content');
 

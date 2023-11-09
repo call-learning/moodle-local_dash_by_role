@@ -1,7 +1,7 @@
 Dash by Role : Dashboard by role
 --
 
-[![Moodle Plugin CI](https://github.com/call-learning/moodle-local_dash_by_role/actions/workflows/ci.yml/badge.svg)](https://github.com/call-learning/moodle-local_dash_by_role/actions/workflows/ci.yml)
+[![Moodle Plugin CI](https://github.com/call-learning/moodle-local_dash_by_role/actions/workflows/main.yml/badge.svg)](https://github.com/call-learning/moodle-local_dash_by_role/actions/workflows/main.yml)
 
 The aim of this plugin is to enhance the usual dashboard by helping admin to define general layout for different system role. A system role is a role that can be assigned system wide
 (like Manager).
