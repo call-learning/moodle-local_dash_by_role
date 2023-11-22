@@ -15,18 +15,21 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Configurable dashboard page by role
- *
- * Provide the ability to configure dashboard by roles
+ * This file defines settingpages and externalpages under the "courses" category
  *
  * @package   local_dash_by_role
- * @copyright 2021 - CALL Learning - Laurent David <laurent@call-learning.fr>
+ * @copyright 2023 - CALL Learning - Laurent David <laurent@call-learning.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-defined('MOODLE_INTERNAL') || die();
+defined('MOODLE_INTERNAL') || die;
+if ($hassiteconfig) {
+    // Create a global Advanced Feature Toggle.
+    $enableoption = new admin_setting_configcheckbox('enabledashbyrole',
+        new lang_string('enabledashbyrole', 'local_dash_by_role'),
+        new lang_string('enabledashbyrole', 'local_dash_by_role'),
+        0);
+    $enableoption->set_updatedcallback('local_dash_by_role_enable_disable_plugin_callback');
 
-$plugin->component = 'local_dash_by_role';
-$plugin->version = 2023110901;
-$plugin->release = 'v2.0.0';
-$plugin->requires = 2019111800;
-$plugin->maturity = MATURITY_STABLE;
+    $optionalsubsystems = $ADMIN->locate('optionalsubsystems');
+    $optionalsubsystems->add($enableoption);
+}

@@ -30,9 +30,10 @@ class utils {
      * Get page context for role
      *
      * @param int $roleid
-     * @return context_system|context_db_by_role
+     * @return context_user|context_db_by_role
      */
     public static function get_page_context($roleid = 0) {
+        global $USER;
         if ($roleid) {
             return \local_dash_by_role\context_db_by_role::instance($roleid);
         }

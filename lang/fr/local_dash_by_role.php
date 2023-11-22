@@ -27,6 +27,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 $string['pluginname'] = 'Tableau de bord par role';
+$string['enabledashbyrole'] = 'Activer le tableau de bord par role';
 $string['all'] = 'Tous les roles';
 $string['privacy:metadata'] = 'Tableau de bord par role n\'affiche que des données existantes.';
 $string['forrole']  = 'Pour le rôle';

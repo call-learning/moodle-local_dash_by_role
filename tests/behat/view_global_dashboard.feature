@@ -16,7 +16,9 @@ Feature: View block on the global dashboard that are visible for my role.
       | student | globalstudent | System       |           |
       | teacher | globalteacher | System       |           |
     Given the following config values are set as admin:
+      | enabledashbyrole | 1 |
       | forcedefaultmymoodle | 1 |
+
     And I log in as "admin"
     And I navigate to "Appearance > Default Dashboard page" in site administration
     And I turn editing mode on

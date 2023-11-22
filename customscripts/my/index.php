@@ -34,9 +34,15 @@
  * @author     Olav Jordan <olav.jordan@remote-learner.net>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
+// START Dash by role.
 global $PAGE, $SITE, $CFG, $FULLME, $OUTPUT, $USER;
 
-require_once($CFG->dirroot . '/my/lib.php');
+if (empty($CFG->enabledashbyrole)) {
+    return;
+}
+// END Dash by role.
+
 require_once($CFG->dirroot . '/my/lib.php');
 
 redirect_if_major_upgrade_required();
@@ -54,6 +60,18 @@ if ($hassiteconfig && moodle_needs_upgrading()) {
 
 $strmymoodle = get_string('myhome');
 
+if (empty($CFG->enabledashboard)) {
+    // Dashboard is disabled, so the /my page shouldn't be displayed.
+    $defaultpage = get_default_home_page();
+    if ($defaultpage == HOMEPAGE_MYCOURSES) {
+        // If default page is set to "My courses", redirect to it.
+        redirect(new moodle_url('/my/courses.php'));
+    } else {
+        // Otherwise, raise an exception to inform the dashboard is disabled.
+        throw new moodle_exception('error:dashboardisdisabled', 'my');
+    }
+}
+
 if (isguestuser()) {  // Force them to see system default, no editing allowed
     // If guests are not allowed my moodle, send them to front page.
     if (empty($CFG->allowguestmymoodle)) {
@@ -70,11 +88,9 @@ if (isguestuser()) {  // Force them to see system default, no editing allowed
 } else {        // We are trying to view or edit our own My Moodle page
     $userid = $USER->id;  // Owner of the page
     // START Dash by role.
-    $context = context_user::instance($USER->id);
     $context =\local_dash_by_role\utils::get_page_context_for_user_role();
     // END Dash by role.
     $PAGE->set_blocks_editing_capability('moodle/my:manageblocks');
-    $header = "$SITE->shortname: $strmymoodle";
     $pagetitle = $strmymoodle;
 }
 
@@ -109,66 +125,9 @@ if (!isguestuser()) {   // Skip default home page for guests
 }
 
 // Toggle the editing state and switches
-if (empty($CFG->forcedefaultmymoodle) && $PAGE->user_allowed_editing()) {
-    if ($reset !== null) {
-        if (!is_null($userid)) {
-            require_sesskey();
-            if (!$currentpage = my_reset_page($userid, MY_PAGE_PRIVATE)) {
-                throw new \moodle_exception('reseterror', 'my');
-            }
-            redirect(new moodle_url('/my'));
-        }
-    } else if ($edit !== null) {             // Editing state was specified
-        $USER->editing = $edit;       // Change editing state
-    } else {                          // Editing state is in session
-        if ($currentpage->userid) {   // It's a page we can edit, so load from session
-            if (!empty($USER->editing)) {
-                $edit = 1;
-            } else {
-                $edit = 0;
-            }
-        } else {
-            // For the page to display properly with the user context header the page blocks need to
-            // be copied over to the user context.
-            if (!$currentpage = my_copy_page($USER->id, MY_PAGE_PRIVATE)) {
-                throw new \moodle_exception('mymoodlesetup');
-            }
-            $context = context_user::instance($USER->id);
-            $PAGE->set_context($context);
-            $PAGE->set_subpage($currentpage->id);
-            // It's a system page and they are not allowed to edit system pages
-            $USER->editing = $edit = 0;          // Disable editing completely, just to be safe
-        }
-    }
-
-    // Add button for editing page
-    $params = array('edit' => !$edit);
-
-    $resetbutton = '';
-    $resetstring = get_string('resetpage', 'my');
-    $reseturl = new moodle_url("$CFG->wwwroot/my/index.php", array('edit' => 1, 'reset' => 1));
-
-    if (!$currentpage->userid) {
-        // viewing a system page -- let the user customise it
-        $editstring = get_string('updatemymoodleon');
-        $params['edit'] = 1;
-    } else if (empty($edit)) {
-        $editstring = get_string('updatemymoodleon');
-    } else {
-        $editstring = get_string('updatemymoodleoff');
-        $resetbutton = $OUTPUT->single_button($reseturl, $resetstring);
-    }
-
-    $url = new moodle_url("$CFG->wwwroot/my/index.php", $params);
-    $button = '';
-    if (!$PAGE->theme->haseditswitch) {
-        $button = $OUTPUT->single_button($url, $editstring);
-    }
-    $PAGE->set_button($resetbutton . $button);
-
-} else {
-    $USER->editing = $edit = 0;
-}
+// START Dash by role.
+$USER->editing = $edit = 0;
+// END Dash by role.
 
 echo $OUTPUT->header();
 

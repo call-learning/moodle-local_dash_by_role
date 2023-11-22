@@ -31,7 +31,7 @@ jobs:
       matrix:
         php: ['8.1']
         moodle-branch: ['MOODLE_401_STABLE']
-        database: [mariadb, postgres]
+        database: [mariadb, pgsql]
 
     steps:
       - name: Check out repository code
@@ -58,6 +58,8 @@ jobs:
       - name: Install moodle-plugin-ci
         run: |
           moodle-plugin-ci install --plugin ./plugin --db-host=127.0.0.1
+          moodle-plugin-ci add-config '$CFG->customscripts = dirname(__FILE__) . "/local/dash_by_role/customscripts/";'
+          moodle-plugin-ci add-config '$CFG->behat_extraallowedsettings = ["customscripts"];'
         env:
           DB: ${{ matrix.database }}
           MOODLE_BRANCH: ${{ matrix.moodle-branch }}

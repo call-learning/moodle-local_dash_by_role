@@ -27,6 +27,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 $string['pluginname'] = 'Dashboard by role';
+$string['enabledashbyrole'] = 'Enable dashboard by role';
 $string['all'] = 'All roles';
 $string['privacy:metadata'] = 'Dashboard by role displays existing data.';
 $string['forrole']  = 'For role';

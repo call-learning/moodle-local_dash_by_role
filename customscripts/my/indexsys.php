@@ -32,8 +32,12 @@
  * @author     Olav Jordan <olav.jordan@remote-learner.net>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
+// START Dash by role.
 global $PAGE, $SITE, $CFG, $FULLME, $OUTPUT;
+if (empty($CFG->enabledashbyrole)) {
+    return;
+}
+// END Dash by role.
 
 require_once($CFG->dirroot . '/my/lib.php');
 require_once($CFG->libdir.'/adminlib.php');
@@ -55,7 +59,11 @@ if ($roleid) {
 $PAGE->set_secondary_active_tab('appearance');
 $PAGE->set_blocks_editing_capability('moodle/my:configsyspages');
 $PAGE->set_url(new moodle_url('/my/indexsys.php'));
-admin_externalpage_setup('mypage', '', null, '', ['pagelayout' => 'mydashboard', 'nosearch' => true]);
+
+// START Dash by role.
+admin_externalpage_setup('mypage', '', $extraparams, '', ['pagelayout' => 'mydashboard', 'nosearch' => true]);
+// END Dash by role.
+
 $PAGE->add_body_class('limitedwidth');
 $PAGE->set_pagetype('my-index');
 $PAGE->blocks->add_region('content');
@@ -63,6 +71,7 @@ $PAGE->set_title($pagetitle);
 $PAGE->set_heading($pagetitle);
 $PAGE->set_secondary_navigation(false);
 $PAGE->set_primary_active_tab('myhome');
+
 // START Dash by role.
 $context = \local_dash_by_role\utils::get_page_context($roleid);
 $PAGE->set_context($context);
@@ -83,9 +92,10 @@ if ($resetall && confirm_sesskey()) {
     echo $OUTPUT->footer();
     die();
 }
-
+// START Dash by role.
 // @codingStandardsIgnoreFile
 // phpcs:ignoreFile -- this is a old core file.
+// END Dash by role.
 
 // Get the My Moodle page info.  Should always return something unless the database is broken.
 if (!$currentpage = my_get_page(null, MY_PAGE_PRIVATE)) {
@@ -95,7 +105,9 @@ $PAGE->set_subpage($currentpage->id);
 
 // Display a button to reset everyone's dashboard.
 $url = $PAGE->url;
-$url->params(['resetall' => true, 'sesskey' => sesskey()]);
+// START Dash by role.
+$url->params(array_merge(['resetall' => true, 'sesskey' => sesskey()], $extraparams));
+// END Dash by role.
 $button = $OUTPUT->single_button($url, get_string('reseteveryonesdashboard', 'my'));
 
 // START Dash by role.
@@ -108,9 +120,8 @@ $select = new single_select($selecturl, 'roleid', $roles, $roleid);
 $select->label = get_string('forrole', 'local_dash_by_role');
 /* @var core_renderer $OUTPUT */
 $button = html_writer::div($OUTPUT->render($select), 'px-2') . $button;
-// END Dash by role.
-
 $PAGE->set_button($button . $PAGE->button);
+// END Dash by role.
 
 echo $OUTPUT->header();
 

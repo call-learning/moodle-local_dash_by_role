@@ -5,19 +5,20 @@ Feature: Add blocks to the global dashboard page
 
   Background:
     Given the following "roles" exist:
-      | name       | shortname |
-      | Global student| globalstudent |
-      | Global teacher| globalteacher |
+      | name           | shortname     |
+      | Global student | globalstudent |
+      | Global teacher | globalteacher |
     And the following "users" exist:
-      | username | firstname | lastname | email |
-      | user1 | Student | 1 | student1@example.com |
-      | user2 | Teacher | 1 | teacher1@example.com |
+      | username | firstname | lastname | email                |
+      | user1    | Student   | 1        | student1@example.com |
+      | user2    | Teacher   | 1        | teacher1@example.com |
     And the following "role assigns" exist:
-      | user    | role           | contextlevel | reference |
-      | user1 | globalstudent        | System       |           |
-      | user2 | globalteacher        | System       |           |
+      | user  | role          | contextlevel | reference |
+      | user1 | globalstudent | System       |           |
+      | user2 | globalteacher | System       |           |
     Given the following config values are set as admin:
-      | forcedefaultmymoodle    | 1 |
+      | enabledashbyrole     | 1 |
+      | forcedefaultmymoodle | 1 |
 
   @javascript
   Scenario: Add blocks to global dashboard

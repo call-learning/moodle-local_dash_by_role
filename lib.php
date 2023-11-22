@@ -15,18 +15,26 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Configurable dashboard page by role
- *
- * Provide the ability to configure dashboard by roles
+ * Configurable dashboard page by role Library
  *
  * @package   local_dash_by_role
  * @copyright 2021 - CALL Learning - Laurent David <laurent@call-learning.fr>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-defined('MOODLE_INTERNAL') || die();
 
-$plugin->component = 'local_dash_by_role';
-$plugin->version = 2023110901;
-$plugin->release = 'v2.0.0';
-$plugin->requires = 2019111800;
-$plugin->maturity = MATURITY_STABLE;
+/**
+ * When enabling and disabling the dash by role plugin, we need to force the default my moodle page
+ *
+ * @return void
+ */
+function local_dash_by_role_enable_disable_plugin_callback() {
+    global $CFG, $DB;
+
+    $enabled = get_config('enabledashbyrole');
+
+    if ($enabled) {
+        set_config('forcedefaultmymoodle', 1);
+    } else {
+        unset_config('forcedefaultmymoodle');
+    }
+}
