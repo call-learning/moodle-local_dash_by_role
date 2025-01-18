@@ -130,6 +130,16 @@ class context_db_by_role extends context {
 
         return false;
     }
+    /**
+     * Returns short context name.
+     *
+     * @since Moodle 4.2
+     *
+     * @return string
+     */
+    public static function get_short_name(): string {
+        return 'db_by_role';
+    }
 
     /**
      * Create missing context instances at user context level
